@@ -1,7 +1,7 @@
 # super-duper-invention
 
 This repository hosts a simple React TODO application scaffolded with [Vite](https://vitejs.dev/).
-The app lets you add items to a list and remove them again, demonstrating basic state management in React while keeping the codebase minimal. Type a task and press **Enter** or click **Add** to append it to the list.
+The app lets you add items to a list, remove them again, and reorder them by dragging and dropping. This demonstrates basic state management in React while keeping the codebase minimal. Type a task and press **Enter** or click **Add** to append it to the list.
 
 ## Getting started
 
