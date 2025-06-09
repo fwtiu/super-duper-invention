@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 function App() {
   const [items, setItems] = useState([])
   const [text, setText] = useState('')
+  const dragId = useRef(null)
 
   const addItem = (e) => {
     if (e) e.preventDefault()
@@ -15,6 +16,33 @@ function App() {
 
   const deleteItem = (id) => {
     setItems((prev) => prev.filter((item) => item.id !== id))
+  }
+
+  const handleDrop = (overId) => {
+    const dragged = dragId.current
+    if (dragged === null || dragged === overId) return
+    setItems((prev) => {
+      const dragIndex = prev.findIndex((i) => i.id === dragged)
+      const overIndex = prev.findIndex((i) => i.id === overId)
+      if (dragIndex === -1 || overIndex === -1) return prev
+      const updated = [...prev]
+      const [removed] = updated.splice(dragIndex, 1)
+      updated.splice(overIndex, 0, removed)
+      return updated
+    })
+  }
+
+  const handleDropToEnd = () => {
+    const dragged = dragId.current
+    if (dragged === null) return
+    setItems((prev) => {
+      const dragIndex = prev.findIndex((i) => i.id === dragged)
+      if (dragIndex === -1 || dragIndex === prev.length - 1) return prev
+      const updated = [...prev]
+      const [removed] = updated.splice(dragIndex, 1)
+      updated.push(removed)
+      return updated
+    })
   }
 
   return (
@@ -34,10 +62,19 @@ function App() {
           Add
         </button>
       </form>
-      <ul>
+      <ul onDragOver={(e) => e.preventDefault()} onDrop={handleDropToEnd}>
         {items.map((item) => (
           <li
             key={item.id}
+            draggable
+            onDragStart={() => {
+              dragId.current = item.id
+            }}
+            onDragEnd={() => {
+              dragId.current = null
+            }}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={() => handleDrop(item.id)}
             className="flex items-center justify-between p-2 mb-2 bg-gray-50 border rounded"
           >
             <span>{item.text}</span>
